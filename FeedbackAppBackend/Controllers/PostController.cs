@@ -95,6 +95,24 @@ namespace FeedbackAppBackend.Controllers
             catch (Exception exception)
             {
                 return Ok(new { success = false, error = exception.Message });
+            } 
+        }
+
+        [HttpPut]
+        [Route("api/LikeComment/{id}")]
+        public IHttpActionResult LikeComment(int id)
+        {
+            try
+            {
+                Reaction reaction = _context.Reactions.FirstOrDefault(x => x.Id == id);
+                reaction.Like++;
+                _context.SaveChanges();
+                return Ok(new { success = true });
+
+            }
+            catch (Exception exception)
+            {
+                return Ok(new { success = false, error = exception.Message });
             }
         }
     }
