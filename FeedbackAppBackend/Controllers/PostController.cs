@@ -43,10 +43,29 @@ namespace FeedbackAppBackend.Controllers
             {
                 return Ok(new { success = false, error = exception.Message });
             }   
-            
+        }
 
-            
-           
+        [HttpGet]
+        [Route("api/GetPost/{title}")]
+        public IHttpActionResult GetPost(string title)
+        {
+            try
+            {
+                Post post = _context.Posts.Include("AppUser").FirstOrDefault(x => x.Title == title);
+                if (post == null)
+                {
+                    return Ok(new { success = false, error = "Post not found" });
+                }
+                List<Comment> comments = _context.Comments.Include("Reaction")
+                    .Where(x => x.PostId == post.Id)
+                    .ToList();
+
+                return Ok(new { success = true, post });
+            }
+            catch (Exception exception)
+            {
+                return Ok(new { success = false, error = exception.Message });
+            }
         }
     }
 }
