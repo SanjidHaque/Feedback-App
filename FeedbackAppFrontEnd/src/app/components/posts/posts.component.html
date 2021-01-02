@@ -33,24 +33,63 @@
 
 
 
-          <div class="row"
-               style="
+          <div
+             style="
              padding-bottom: 10px;
              padding-top: 10px;
+             font-weight: 500;
              border-bottom: thin solid #e2e2e2"
-               *ngFor="let post of posts; let i = index">
+               *ngFor="let post of posts;">
 
-            <div class="col-xl-4">
-             {{ post.Title }}
+            <div class="row">
+              <div class="col-xl-3">
+                {{ post.Title }}
+              </div>
+
+              <div class="col-xl-3">
+                {{ post.AppUser.Name }}
+              </div>
+
+              <div class="col-xl-3">
+                {{ post.CreatedDate }}
+              </div>
+
+              <div class="col-xl-3">
+                {{ post.Comments.length }} <span *ngIf="post.Comments.length === 1; else multipleComments">Comment</span> <ng-template #multipleComments>Comments</ng-template>
+              </div>
             </div>
 
-            <div class="col-xl-3">
-              {{ post.AppUser.Name }}
-            </div>
+            <br>
 
-            <div class="col-xl-3">
-              {{ post.CreatedDate }}
-            </div>
+              <div class="row"
+                   style="color: #008bb8;"
+                   *ngFor="let comment of post.Comments">
+
+                <div class="col-xl-3">
+                  {{ comment.Title }}
+                </div>
+
+                <div class="col-xl-3">
+                  {{ comment.AppUser.Name }}
+                </div>
+
+                <div class="col-xl-3">
+                  {{ formatCommentDate(comment.CreatedDate) }}
+                </div>
+
+                <div class="col-xl-1">
+                  ▲ {{ comment.Reaction.Like }}
+                </div>
+
+                <div class="col-xl-1">
+                  ▼ {{ comment.Reaction.Dislike }}
+                </div>
+
+              </div>
+
+
+
+
 
           </div>
 

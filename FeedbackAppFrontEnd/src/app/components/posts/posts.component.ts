@@ -22,8 +22,21 @@ export class PostsComponent implements OnInit {
   ngOnInit() {
     this.route.data.subscribe((data: Data) => {
       this.posts = data['posts'].paginatedPosts;
+      this.formatPostCreatedTime();
       console.log(this.posts);
     });
+  }
+
+
+  formatPostCreatedTime() {
+    this.posts.forEach(post => {
+      const postDate = new Date(post.CreatedDate);
+      post.CreatedDate = postDate.toLocaleDateString();
+    });
+  }
+
+  formatCommentDate(createdDate) {
+    return new Date(createdDate).toLocaleDateString();
   }
 }
 
