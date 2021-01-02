@@ -107,6 +107,30 @@ namespace FeedbackAppBackend.Controllers
                 Reaction reaction = _context.Reactions.FirstOrDefault(x => x.Id == id);
                 reaction.Like++;
                 _context.SaveChanges();
+                
+                return Ok(new { success = true });
+
+            }
+            catch (Exception exception)
+            {
+                return Ok(new { success = false, error = exception.Message });
+            }
+        }
+
+
+        [HttpPut]
+        [Route("api/DislikeComment/{id}")]
+        public IHttpActionResult DislikeComment(int id)
+        {
+            try
+            {
+                Reaction reaction = _context.Reactions.FirstOrDefault(x => x.Id == id);
+                if (reaction.Dislike != 0)
+                {
+                    reaction.Dislike--;
+                    _context.SaveChanges();
+                }
+
                 return Ok(new { success = true });
 
             }
