@@ -36,7 +36,9 @@ namespace FeedbackAppBackend.Controllers
                     post.Comments = comments;
                    
                 });
-                IEnumerable<Post> paginatedPosts = _postService.getPaginatedPost(posts, 1, 1);
+                int pageSize = 5;
+                int pageNumber = 1;
+                IEnumerable<Post> paginatedPosts = _postService.getPaginatedPost(posts, pageNumber, pageSize);
                 return Ok( new { success = true, paginatedPosts } );
 
             } catch(Exception exception)
@@ -46,8 +48,8 @@ namespace FeedbackAppBackend.Controllers
         }
 
         [HttpGet]
-        [Route("api/GetPost/{title}")]
-        public IHttpActionResult GetPost(string title)
+        [Route("api/SearchPost/{title}")]
+        public IHttpActionResult SearchPost(string title)
         {
             try
             {
@@ -61,6 +63,34 @@ namespace FeedbackAppBackend.Controllers
                     .ToList();
 
                 return Ok(new { success = true, post });
+            }
+            catch (Exception exception)
+            {
+                return Ok(new { success = false, error = exception.Message });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/GetPostsByPageNumber/{pageNumber}")]
+        public IHttpActionResult GetPostsByPageNumber(int pageNumber)
+        {
+            try
+            {
+                List<Post> posts = _context.Posts.Include("AppUser").ToList();
+                posts.ForEach(post =>
+                {
+                    List<Comment> comments = _context.Comments.Include("Reaction")
+                    .Where(x => x.PostId == post.Id)
+                    .ToList();
+                    post.Comments = comments;
+
+                });
+
+                int pageSize = 5;
+                IEnumerable<Post> paginatedPosts = _postService.getPaginatedPost(posts, pageNumber, pageSize);
+                return Ok(new { success = true, paginatedPosts });
+
             }
             catch (Exception exception)
             {
