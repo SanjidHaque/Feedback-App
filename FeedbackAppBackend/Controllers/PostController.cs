@@ -1,4 +1,5 @@
 ﻿using FeedbackAppBackend.Models;
+using FeedbackAppBackend.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,11 @@ namespace FeedbackAppBackend.Controllers
     public class PostController : ApiController
     {
         private readonly ApplicationDbContext _context;
+        private PostService _postService;
         public PostController()
         {
             _context = new ApplicationDbContext();
+            _postService = new PostService();
         }
 
         [HttpGet]
@@ -33,12 +36,15 @@ namespace FeedbackAppBackend.Controllers
                     post.Comments = comments;
                    
                 });
-                return Ok( new { success = true, posts } );
+                IEnumerable<Post> paginatedPosts = _postService.getPaginatedPost(posts, 1, 1);
+                return Ok( new { success = true, paginatedPosts } );
 
             } catch(Exception exception)
             {
                 return Ok(new { success = false, error = exception.Message });
-            }           
+            }   
+            
+
             
            
         }
